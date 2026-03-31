@@ -1,4 +1,3 @@
-import 'dart:nativewrappers/_internal/vm/lib/math_patch.dart';
 
 import 'package:flutter/material.dart';
 import 'package:expense_tracker_sp26/models/expense.dart';
@@ -20,9 +19,9 @@ class ExpenseItem  extends StatelessWidget {
             Text('\$${expense.amount.toStringAsFixed(2)}'),
             Spacer(),
             Row(children: [
-              const Icon(Icons.alarm),
+              Icon(categoryIcons[expense.category]),
               const SizedBox(width:8),
-              Text(expense.date.toString()),
+              Text(expense.formattedDate),
             ],)
           ])
         ],)
