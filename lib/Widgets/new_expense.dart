@@ -10,6 +10,8 @@ class NewExpense extends StatefulWidget{
 
 class _NewExpenseState extends State<NewExpense>{
   final _titleController = TextEditingController();
+  final _amountController = TextEditingController();
+  final _dateController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -24,9 +26,25 @@ class _NewExpenseState extends State<NewExpense>{
             label: Text("Title"),
           ),
         ),
+        TextField(
+          controller: _amountController,
+          keyboardType: TextInputType.number,
+          decoration: InputDecoration(
+            prefixText:'\$',
+            label: Text("Amount"),
+          )
+        ),
+        TextField(
+          keyboardType: TextInputType.datetime,
+          decoration: InputDecoration(
+            label: Text("Date"),
+          )
+        ),
         Row(children: [
           ElevatedButton(onPressed: () {
             print(_titleController.text);
+            print(_amountController.text);
+            print(_dateController.text);
           }, child: Text("Save"))
         ],)
       ],
