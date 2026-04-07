@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:expense_tracker_sp26/models/expense.dart';
+import 'package:intl/intl.dart';
+final formatter = DateFormat.yMd();
 
 class NewExpense extends StatefulWidget{
   const NewExpense({super.key});
@@ -12,6 +15,7 @@ class _NewExpenseState extends State<NewExpense>{
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
   final _dateController = TextEditingController();
+  DateTime? _selectedDate;
 
 void _presentDatePicker() async {
   final now = DateTime.now();
@@ -23,6 +27,9 @@ void _presentDatePicker() async {
     lastDate: now
   );
   print(pickedDate);
+  setState((){
+    _selectedDate = pickedDate;
+    });
 }
 
   @override
@@ -66,7 +73,11 @@ void _presentDatePicker() async {
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
-                const Text('Selected Date'),
+                Text(
+                  _selectedDate == null ?
+                  'Selected Date' :
+                  formatter.format(_selectedDate!), 
+                ),
                 IconButton(onPressed:_presentDatePicker , icon: const Icon(Icons.calendar_month))
               ],),)
             ],
@@ -81,6 +92,14 @@ void _presentDatePicker() async {
         ),
 
         Row(children: [
+          DropdownButton(
+            items: Category.values.map(
+              (category) => DropdownMenuItem(
+                value: category,
+                child: Text(category.name.toString(),),
+              ),
+            ).toList(),
+            onChanged: (value){}),
           ElevatedButton(onPressed:(){
             Navigator.pop(context);
           }, child: Text("Cancel")
