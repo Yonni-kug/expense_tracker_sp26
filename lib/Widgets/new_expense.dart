@@ -13,6 +13,18 @@ class _NewExpenseState extends State<NewExpense>{
   final _amountController = TextEditingController();
   final _dateController = TextEditingController();
 
+void _presentDatePicker() async {
+  final now = DateTime.now();
+  final firstDate = DateTime(now.year - 1, now.month, now.day);
+  final pickedDate = await showDatePicker(
+    context: context, 
+    initialDate: DateTime.now(), 
+    firstDate: firstDate, 
+    lastDate: now
+  );
+  print(pickedDate);
+}
+
   @override
   void dispose() {
     _titleController.dispose();
@@ -35,20 +47,39 @@ class _NewExpenseState extends State<NewExpense>{
             label: Text("Title"),
           ),
         ),
-        TextField(
-          controller: _amountController,
-          keyboardType: TextInputType.number,
-          decoration: InputDecoration(
-            prefixText:'\$',
-            label: Text("Amount"),
-          )
-        ),
+        
+        Row(
+            children: [
+              Expanded(
+                child: TextField(
+                  controller:_amountController,
+                  maxLength: 10,
+                  keyboardType: TextInputType.number,
+                  decoration: InputDecoration(
+                    prefixText: '\$',
+                    label: Text("Amount"),
+                  ),
+                ),
+              ),
+              SizedBox(width:16),
+              Expanded(child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                const Text('Selected Date'),
+                IconButton(onPressed:_presentDatePicker , icon: const Icon(Icons.calendar_month))
+              ],),)
+            ],
+          ),
+
         TextField(
           keyboardType: TextInputType.datetime,
           decoration: InputDecoration(
+            prefixText: '///',
             label: Text("Date"),
           )
         ),
+
         Row(children: [
           ElevatedButton(onPressed:(){
             Navigator.pop(context);
@@ -59,7 +90,9 @@ class _NewExpenseState extends State<NewExpense>{
             print(_amountController.text);
             print(_dateController.text);
           }, child: Text("Save"))
-        ],)
+        ],
+      )
+
       ],
     ),
   );
