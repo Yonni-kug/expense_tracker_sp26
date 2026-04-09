@@ -4,8 +4,11 @@ import 'package:intl/intl.dart';
 final formatter = DateFormat.yMd();
 
 class NewExpense extends StatefulWidget{
-  const NewExpense({super.key});
+  const NewExpense({super.key, required this.onAddExpense});
  
+  final void Function(Expense expense) onAddExpense;
+
+  @override
   State<NewExpense> createState() {
     return _NewExpenseState();
   }
@@ -16,6 +19,32 @@ class _NewExpenseState extends State<NewExpense>{
   final _amountController = TextEditingController();
   final _dateController = TextEditingController();
   DateTime? _selectedDate;
+  Category _selectedCategory = Category.leisure;
+
+  void _submitExpenseData(){
+    final enteredAmount = double.tryParse(_amountController.text);
+    final amountIsInvalid = enteredAmount == null || enteredAmount <= 0;
+    if (_titleController.text.trim().isEmpty || amountIsInvalid || _selectedDate == null){
+      showDialog(context: context, builder: (ctx) => AlertDialog(
+        title: Text("Invalid Input"),
+        content: Text("Please make sure a valid title, amount and date was entered."),
+        actions: [
+          TextButton(onPressed: (){
+            Navigator.pop(ctx);
+          }, child: Text("Okay"))
+        ],
+      ));
+      return;
+    }
+
+    widget.onAddExpense(Expense(
+      title: _titleController.text, 
+      amount: enteredAmount, 
+      date: _selectedDate!, 
+      category: _selectedCategory,
+    ));
+    Navigator.pop(context);
+  }
 
 void _presentDatePicker() async {
   final now = DateTime.now();
@@ -93,21 +122,28 @@ void _presentDatePicker() async {
 
         Row(children: [
           DropdownButton(
+            value: _selectedCategory,
             items: Category.values.map(
               (category) => DropdownMenuItem(
                 value: category,
-                child: Text(category.name.toString(),),
+                child: Text(category.name.toUpperCase(),),
               ),
             ).toList(),
-            onChanged: (value){}),
+            onChanged: (value){
+              if (value == null){
+                return;
+              }
+              setState(() {
+                _selectedCategory = value;
+              });
+            }),
           ElevatedButton(onPressed:(){
             Navigator.pop(context);
           }, child: Text("Cancel")
         ), 
           ElevatedButton(onPressed: () {
-            print(_titleController.text);
-            print(_amountController.text);
-            print(_dateController.text);
+           _submitExpenseData();
+            Navigator.pop(context);
           }, child: Text("Save"))
         ],
       )
