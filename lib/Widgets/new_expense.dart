@@ -17,7 +17,6 @@ class NewExpense extends StatefulWidget{
 class _NewExpenseState extends State<NewExpense>{
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
-  final _dateController = TextEditingController();
   DateTime? _selectedDate;
   Category _selectedCategory = Category.leisure;
 
@@ -65,7 +64,6 @@ void _presentDatePicker() async {
   void dispose() {
     _titleController.dispose();
     _amountController.dispose();
-    _dateController.dispose();
     super.dispose();
   }
 
@@ -112,14 +110,6 @@ void _presentDatePicker() async {
             ],
           ),
 
-        TextField(
-          keyboardType: TextInputType.datetime,
-          decoration: InputDecoration(
-            prefixText: '///',
-            label: Text("Date"),
-          )
-        ),
-
         Row(children: [
           DropdownButton(
             value: _selectedCategory,
@@ -143,7 +133,7 @@ void _presentDatePicker() async {
         ), 
           ElevatedButton(onPressed: () {
            _submitExpenseData();
-            Navigator.pop(context);
+            // Navigator.pop(context);
           }, child: Text("Save"))
         ],
       )
